@@ -1,15 +1,15 @@
-** Description
+## Description
 
 Scramble is a Brainfuck interpreter and compiler that can also compile Brainfuck programs to x86_64 assembly.
 
-** Dependencies
+## Dependencies
 
 - sbcl
 - nasm
 
-** Installation
+## Installation
 
-#+begin_src lisp
+``` sh
   # make
-  # ./scramble examples/hello.lsip
-#+end_src
+  # ./scramble examples/hello.lisp
+```
