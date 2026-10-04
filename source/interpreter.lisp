@@ -1,12 +1,4 @@
-(defpackage scramble
-  (:use :cl)
-  (:export
-   #:scramble))
-
-(in-package :scramble)
-
-(defparameter *tape-length* (* 32 1024)
-  "Length of *TAPE*")
+(in-package :scramble-interpreter)
 
 (defparameter *tape* (make-array *tape-length* :initial-element 0)
   "Array containing the Brainfuck program's data cells.")
@@ -71,29 +63,8 @@ Return the car from *LOOP-STACK*."
 	nil)
       (car *loop-stack*)))
 
-(defun count-instructions (file-path)
-  "Count all Brainfuck instructions at FILE-PATH.
-Return the number of instructions."
-  (with-open-file (stream file-path)
-    (loop for c = (read-char stream nil)
-	  while c
-	  when (member c '(#\< #\> #\+ #\- #\. #\, #\[ #\]))
-	    count t)))
-
-(defun read-program (file-path program-array)
-  "Read the Brainfuck program from FILE-PATH into PROGRAM-ARRAY.
-Ignore all non-brainfuck instructions."
-  (let ((index 0))
-    (with-open-file (stream file-path)
-      (loop for c = (read-char stream nil)
-	    while c
-	    when (member c '(#\< #\> #\+ #\- #\. #\, #\[ #\]))
-	      do
-		 (setf (aref program-array index) c)
-		 (incf index)))))
-
-(defun parse-program (program-array)
-  "Parse Brainfuck instrutions in PROGRAM-ARRAY."
+(defun interprete-program (program-array)
+  "Interprete Brainfuck instrutions in PROGRAM-ARRAY."
   (let ((ip 0))
     (loop while (< ip (length program-array))
 	  do
@@ -111,11 +82,3 @@ Ignore all non-brainfuck instructions."
 		      (when new-ip
 			(setf ip new-ip)))))
 	     (incf ip))))
-
-(defun scramble ()
-  "Run Scramble Brainfuck interpreter."
-  (let* ((file-path (second sb-ext:*posix-argv*))
-	 (instruction-count (count-instructions file-path))
-	 (program (make-array instruction-count)))
-    (read-program file-path program)
-    (parse-program program)))
